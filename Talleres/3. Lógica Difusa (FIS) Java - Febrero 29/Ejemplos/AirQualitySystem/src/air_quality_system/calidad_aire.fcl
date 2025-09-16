@@ -1,0 +1,122 @@
+FUNCTION_BLOCK calidad_aire
+
+VAR_INPUT
+    co2 : REAL; RANGE := (0 .. 100);
+    particulas : REAL; RANGE := (0 .. 50);
+    temperatura : REAL; RANGE := (0 .. 40);
+END_VAR
+
+VAR_OUTPUT
+    calidad_general : REAL; RANGE := (0 .. 10);
+    riesgo_salud : REAL; RANGE := (0 .. 100);
+END_VAR
+
+FUZZIFY co2
+    TERM bajo := gauss 20 10;
+    TERM medio := gauss 50 15;
+    TERM alto := gauss 80 10;
+    TERM muy_alto := gauss 95 5;
+END_FUZZIFY
+
+FUZZIFY particulas
+    TERM muy_bajo := (0, 1) (5, 1) (10, 0);
+    TERM bajo := (5, 0) (10, 1) (20, 0);
+    TERM medio := (15, 0) (25, 1) (35, 0);
+    TERM alto := (30, 0) (40, 1) (50, 1);
+END_FUZZIFY
+
+FUZZIFY temperatura
+    TERM muy_frio := trape 0 0 5 10;
+    TERM frio := trape 5 10 15 20;
+    TERM normal := trian 15 20 25;
+    TERM caliente := trape 22 27 32 37;
+    TERM muy_caliente := trape 32 35 40 40;
+END_FUZZIFY
+
+DEFUZZIFY calidad_general
+    TERM pesima := trian 0 0 3;
+    TERM mala := trian 2 4 6;
+    TERM moderada := trian 5 6 7;
+    TERM buena := trian 6 8 9;
+    TERM excelente := trian 8 10 10;
+    METHOD : COG;
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+DEFUZZIFY riesgo_salud
+    TERM minimo := (0, 1) (15, 1) (25, 0);
+    TERM bajo := (20, 0) (30, 1) (40, 0);
+    TERM medio := trian 35 50 65;
+    TERM alto := (60, 0) (75, 1) (85, 0);
+    TERM critico := (80, 0) (90, 1) (100, 1);
+    METHOD : COG;
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+
+    RULE 1 : IF (co2 IS muy_alto) OR (particulas IS alto) 
+            THEN calidad_general IS pesima, riesgo_salud IS critico;
+            
+    RULE 2 : IF (co2 IS bajo) AND (particulas IS muy_bajo) AND (temperatura IS normal)
+            THEN calidad_general IS excelente, riesgo_salud IS minimo;
+            
+    RULE 3 : IF (temperatura IS muy_caliente) AND (co2 IS alto)
+            THEN calidad_general IS mala, riesgo_salud IS alto;
+            
+    RULE 4 : IF (temperatura IS muy_frio) AND (particulas IS alto)
+            THEN calidad_general IS mala, riesgo_salud IS alto;
+            
+    RULE 5 : IF (co2 IS medio) AND (particulas IS medio) AND (temperatura IS normal)
+            THEN calidad_general IS moderada, riesgo_salud IS medio;
+            
+    RULE 6 : IF (co2 IS bajo) AND (particulas IS medio) AND (temperatura IS caliente)
+            THEN calidad_general IS moderada, riesgo_salud IS bajo;
+            
+    RULE 7 : IF (co2 IS alto) AND (temperatura IS muy_caliente)
+            THEN calidad_general IS pesima, riesgo_salud IS critico;
+            
+    RULE 8 : IF (particulas IS alto) AND (temperatura IS muy_frio)
+            THEN riesgo_salud IS alto;
+            
+    RULE 9 : IF (co2 IS bajo) AND (particulas IS bajo)
+            THEN calidad_general IS buena;
+            
+    RULE 10 : IF (temperatura IS normal) AND (particulas IS muy_bajo)
+            THEN riesgo_salud IS minimo;
+            
+    RULE 11 : IF (co2 IS medio) AND (temperatura IS caliente)
+            THEN calidad_general IS moderada, riesgo_salud IS medio;
+            
+    RULE 12 : IF (particulas IS medio) AND (temperatura IS frio)
+            THEN calidad_general IS moderada;
+            
+    RULE 13 : IF (co2 IS muy_alto) AND (temperatura IS muy_caliente)
+            THEN calidad_general IS pesima, riesgo_salud IS critico;
+            
+    RULE 14 : IF (particulas IS alto) AND (co2 IS alto)
+            THEN calidad_general IS pesima, riesgo_salud IS critico;
+            
+    RULE 15 : IF (temperatura IS muy_frio) AND (co2 IS bajo)
+            THEN riesgo_salud IS medio;
+            
+    RULE 16 : IF (particulas IS muy_bajo) AND (temperatura IS caliente)
+            THEN calidad_general IS buena;
+            
+    RULE 17 : IF (co2 IS alto) OR (particulas IS alto)
+            THEN riesgo_salud IS alto;
+            
+    RULE 18 : IF (temperatura IS muy_caliente) OR (temperatura IS muy_frio)
+            THEN riesgo_salud IS medio;
+            
+    RULE 19 : IF (co2 IS bajo) AND (particulas IS muy_bajo) AND (temperatura IS normal)
+            THEN calidad_general IS excelente, riesgo_salud IS minimo;
+            
+    RULE 20 : IF (co2 IS medio) AND (particulas IS bajo) AND (temperatura IS normal)
+            THEN calidad_general IS buena, riesgo_salud IS bajo;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

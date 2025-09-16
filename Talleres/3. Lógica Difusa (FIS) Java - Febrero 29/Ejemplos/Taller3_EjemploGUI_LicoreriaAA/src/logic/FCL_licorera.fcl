@@ -1,0 +1,120 @@
+FUNCTION_BLOCK prop
+
+VAR_INPUT				
+        plan : REAL; RANGE := (0 .. 10);
+        intensidad : REAL; RANGE := (0 .. 10);
+        cantidad : REAL; RANGE := (0 .. 2000);
+END_VAR
+
+VAR_OUTPUT				
+        precio : REAL; RANGE := (0 .. 650000);
+        porcentaje : REAL; RANGE := (0 .. 100);
+END_VAR
+
+FUZZIFY plan			
+        TERM wakeUp := trape 0 0 1 2; 
+        TERM relax := trape 1.5 2 4 5;
+        TERM party := trape 4.5 5 7 8;
+        TERM reset := trape 7.5 8 10 12;
+END_FUZZIFY
+
+FUZZIFY intensidad
+        TERM suave := gauss 0 2;
+        TERM moderado := gauss 4 1.5;
+        TERM fuerte := gauss 10 2.5;
+END_FUZZIFY
+
+FUZZIFY cantidad			
+        TERM animas := trape -450 -50 50 400; 
+        TERM aburrido := trape 200 450 550 900;
+        TERM arranque := trape 700 950 1050 1400;
+        TERM mort := trape 1200 1400 1500 1800;
+        TERM nuclear := trape 1600 1800 2000 2450;
+END_FUZZIFY
+
+DEFUZZIFY precio			
+        TERM estudiante := trape 0 0 50000 150000; 
+        TERM trabajador := trape 100000 150000 250000 350400;
+        TERM emprendedor := trape 250000 350000 450000 550000;
+        TERM entusiasta := trape 450000 550000 650000 750000;
+        METHOD : COG;	
+        DEFAULT := 135000;
+END_DEFUZZIFY
+
+DEFUZZIFY porcentaje			
+        TERM bajo := gauss 0 4; 
+        TERM medio := gauss 25 7;
+        TERM alto := gauss 55 10;
+        TERM muyAlto := gauss 100 20;
+        METHOD : COG;	
+        DEFAULT := 4.5;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+        AND : MIN;
+        ACT : MIN;
+        ACCU : MAX;
+
+        RULE 1 : IF (plan IS wakeUp) AND (intensidad IS suave) AND (cantidad IS animas) THEN precio IS estudiante, porcentaje IS bajo;
+	RULE 2 : IF (plan IS wakeUp) AND (intensidad IS suave) AND (cantidad IS aburrido) THEN precio IS estudiante, porcentaje IS bajo;
+	RULE 3 : IF (plan IS wakeUp) AND (intensidad IS suave) AND (cantidad IS arranque) THEN precio IS trabajador, porcentaje IS bajo;
+	RULE 4 : IF (plan IS wakeUp) AND (intensidad IS suave) AND (cantidad IS mort) THEN precio IS emprendedor, porcentaje IS bajo;
+	RULE 5 : IF (plan IS wakeUp) AND (intensidad IS suave) AND (cantidad IS nuclear) THEN precio IS entusiasta, porcentaje IS bajo;
+	RULE 6 : IF (plan IS wakeUp) AND (intensidad IS moderado) AND (cantidad IS animas) THEN precio IS estudiante, porcentaje IS bajo;
+	RULE 7 : IF (plan IS wakeUp) AND (intensidad IS moderado) AND (cantidad IS aburrido) THEN precio IS trabajador, porcentaje IS medio;
+	RULE 8 : IF (plan IS wakeUp) AND (intensidad IS moderado) AND (cantidad IS arranque) THEN precio IS emprendedor, porcentaje IS medio;
+	RULE 9 : IF (plan IS wakeUp) AND (intensidad IS moderado) AND (cantidad IS mort) THEN precio IS emprendedor, porcentaje IS alto;
+	RULE 10 : IF (plan IS wakeUp) AND (intensidad IS moderado) AND (cantidad IS nuclear) THEN precio IS entusiasta, porcentaje IS alto;
+	RULE 11 : IF (plan IS wakeUp) AND (intensidad IS fuerte) AND (cantidad IS animas) THEN precio IS estudiante, porcentaje IS medio;
+	RULE 12 : IF (plan IS wakeUp) AND (intensidad IS fuerte) AND (cantidad IS aburrido) THEN precio IS trabajador, porcentaje IS medio;
+	RULE 13 : IF (plan IS wakeUp) AND (intensidad IS fuerte) AND (cantidad IS arranque) THEN precio IS emprendedor, porcentaje IS alto;
+	RULE 14 : IF (plan IS wakeUp) AND (intensidad IS fuerte) AND (cantidad IS mort) THEN precio IS emprendedor, porcentaje IS muyAlto;
+	RULE 15 : IF (plan IS wakeUp) AND (intensidad IS fuerte) AND (cantidad IS nuclear) THEN precio IS entusiasta, porcentaje IS muyAlto;
+	RULE 16 : IF (plan IS relax) AND (intensidad IS suave) AND (cantidad IS animas) THEN precio IS estudiante, porcentaje IS bajo;
+	RULE 17 : IF (plan IS relax) AND (intensidad IS suave) AND (cantidad IS aburrido) THEN precio IS estudiante, porcentaje IS bajo;
+	RULE 18 : IF (plan IS relax) AND (intensidad IS suave) AND (cantidad IS arranque) THEN precio IS trabajador, porcentaje IS bajo;
+	RULE 19 : IF (plan IS relax) AND (intensidad IS suave) AND (cantidad IS mort) THEN precio IS emprendedor, porcentaje IS bajo;
+	RULE 20 : IF (plan IS relax) AND (intensidad IS suave) AND (cantidad IS nuclear) THEN precio IS entusiasta, porcentaje IS bajo;
+	RULE 21 : IF (plan IS relax) AND (intensidad IS moderado) AND (cantidad IS animas) THEN precio IS estudiante, porcentaje IS medio;
+	RULE 22 : IF (plan IS relax) AND (intensidad IS moderado) AND (cantidad IS aburrido) THEN precio IS trabajador, porcentaje IS medio;
+	RULE 23 : IF (plan IS relax) AND (intensidad IS moderado) AND (cantidad IS arranque) THEN precio IS emprendedor, porcentaje IS medio;
+	RULE 24 : IF (plan IS relax) AND (intensidad IS moderado) AND (cantidad IS mort) THEN precio IS emprendedor, porcentaje IS alto;
+	RULE 25 : IF (plan IS relax) AND (intensidad IS moderado) AND (cantidad IS nuclear) THEN precio IS entusiasta, porcentaje IS alto;
+	RULE 26 : IF (plan IS relax) AND (intensidad IS fuerte) AND (cantidad IS animas) THEN precio IS estudiante, porcentaje IS medio;
+	RULE 27 : IF (plan IS relax) AND (intensidad IS fuerte) AND (cantidad IS aburrido) THEN precio IS trabajador, porcentaje IS medio;
+	RULE 28 : IF (plan IS relax) AND (intensidad IS fuerte) AND (cantidad IS arranque) THEN precio IS emprendedor, porcentaje IS alto;
+	RULE 29 : IF (plan IS relax) AND (intensidad IS fuerte) AND (cantidad IS mort) THEN precio IS emprendedor, porcentaje IS muyAlto;
+	RULE 30 : IF (plan IS relax) AND (intensidad IS fuerte) AND (cantidad IS nuclear) THEN precio IS entusiasta, porcentaje IS muyAlto;
+	RULE 31 : IF (plan IS party) AND (intensidad IS suave) AND (cantidad IS animas) THEN precio IS estudiante, porcentaje IS bajo;
+	RULE 32 : IF (plan IS party) AND (intensidad IS suave) AND (cantidad IS aburrido) THEN precio IS estudiante, porcentaje IS bajo;
+	RULE 33 : IF (plan IS party) AND (intensidad IS suave) AND (cantidad IS arranque) THEN precio IS trabajador, porcentaje IS bajo;
+	RULE 34 : IF (plan IS party) AND (intensidad IS suave) AND (cantidad IS mort) THEN precio IS emprendedor, porcentaje IS bajo;
+	RULE 35 : IF (plan IS party) AND (intensidad IS suave) AND (cantidad IS nuclear) THEN precio IS entusiasta, porcentaje IS bajo;
+	RULE 36 : IF (plan IS party) AND (intensidad IS moderado) AND (cantidad IS animas) THEN precio IS estudiante, porcentaje IS medio;
+	RULE 37 : IF (plan IS party) AND (intensidad IS moderado) AND (cantidad IS aburrido) THEN precio IS trabajador, porcentaje IS medio;
+	RULE 38 : IF (plan IS party) AND (intensidad IS moderado) AND (cantidad IS arranque) THEN precio IS emprendedor, porcentaje IS medio;
+	RULE 39 : IF (plan IS party) AND (intensidad IS moderado) AND (cantidad IS mort) THEN precio IS emprendedor, porcentaje IS alto;
+	RULE 40 : IF (plan IS party) AND (intensidad IS moderado) AND (cantidad IS nuclear) THEN precio IS entusiasta, porcentaje IS alto;
+	RULE 41 : IF (plan IS party) AND (intensidad IS fuerte) AND (cantidad IS animas) THEN precio IS estudiante, porcentaje IS medio;
+	RULE 42 : IF (plan IS party) AND (intensidad IS fuerte) AND (cantidad IS aburrido) THEN precio IS trabajador, porcentaje IS medio;
+	RULE 43 : IF (plan IS party) AND (intensidad IS fuerte) AND (cantidad IS arranque) THEN precio IS emprendedor, porcentaje IS alto;
+	RULE 44 : IF (plan IS party) AND (intensidad IS fuerte) AND (cantidad IS mort) THEN precio IS emprendedor, porcentaje IS muyAlto;
+	RULE 45 : IF (plan IS party) AND (intensidad IS fuerte) AND (cantidad IS nuclear) THEN precio IS entusiasta, porcentaje IS muyAlto;
+	RULE 46 : IF (plan IS reset) AND (intensidad IS suave) AND (cantidad IS animas) THEN precio IS estudiante, porcentaje IS medio;
+	RULE 47 : IF (plan IS reset) AND (intensidad IS suave) AND (cantidad IS aburrido) THEN precio IS estudiante, porcentaje IS medio;
+	RULE 48 : IF (plan IS reset) AND (intensidad IS suave) AND (cantidad IS arranque) THEN precio IS trabajador, porcentaje IS medio;
+	RULE 49 : IF (plan IS reset) AND (intensidad IS suave) AND (cantidad IS mort) THEN precio IS emprendedor, porcentaje IS medio;
+	RULE 50 : IF (plan IS reset) AND (intensidad IS suave) AND (cantidad IS nuclear) THEN precio IS entusiasta, porcentaje IS medio;
+	RULE 51 : IF (plan IS reset) AND (intensidad IS moderado) AND (cantidad IS animas) THEN precio IS estudiante, porcentaje IS alto;
+	RULE 52 : IF (plan IS reset) AND (intensidad IS moderado) AND (cantidad IS aburrido) THEN precio IS trabajador, porcentaje IS alto;
+	RULE 53 : IF (plan IS reset) AND (intensidad IS moderado) AND (cantidad IS arranque) THEN precio IS emprendedor, porcentaje IS alto;
+	RULE 54 : IF (plan IS reset) AND (intensidad IS moderado) AND (cantidad IS mort) THEN precio IS emprendedor, porcentaje IS muyAlto;
+	RULE 55 : IF (plan IS reset) AND (intensidad IS moderado) AND (cantidad IS nuclear) THEN precio IS entusiasta, porcentaje IS muyAlto;
+	RULE 56 : IF (plan IS reset) AND (intensidad IS fuerte) AND (cantidad IS animas) THEN precio IS estudiante, porcentaje IS alto;
+	RULE 57 : IF (plan IS reset) AND (intensidad IS fuerte) AND (cantidad IS aburrido) THEN precio IS trabajador, porcentaje IS alto;
+	RULE 58 : IF (plan IS reset) AND (intensidad IS fuerte) AND (cantidad IS arranque) THEN precio IS emprendedor, porcentaje IS muyAlto;
+	RULE 59 : IF (plan IS reset) AND (intensidad IS fuerte) AND (cantidad IS mort) THEN precio IS emprendedor, porcentaje IS muyAlto;
+	RULE 60 : IF (plan IS reset) AND (intensidad IS fuerte) AND (cantidad IS nuclear) THEN precio IS entusiasta, porcentaje IS muyAlto;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

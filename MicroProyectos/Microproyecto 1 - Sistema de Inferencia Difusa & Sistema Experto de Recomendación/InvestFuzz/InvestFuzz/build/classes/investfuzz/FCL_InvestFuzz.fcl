@@ -1,0 +1,111 @@
+FUNCTION_BLOCK FCL_InvestFuzz
+
+VAR_INPUT
+    Riesgo : REAL; RANGE := (0 .. 1);
+    Rentabilidad : REAL; RANGE := (0 .. 100);
+    Plazo : REAL; RANGE := (1 .. 10);
+END_VAR
+
+VAR_OUTPUT
+    Diversificacion : REAL; RANGE := (1 .. 10);
+    Liquidez : REAL; RANGE := (0 .. 100);
+END_VAR
+
+FUZZIFY Riesgo
+    TERM MuyBajo := trian 0 0 0.2;
+    TERM Bajo := trian 0.15 0.25 0.35;
+    TERM Medio := trian 0.3 0.425 0.55;
+    TERM Alto := trian 0.5 0.625 0.75;
+    TERM MuyAlto := trian 0.7 1 1;
+END_FUZZIFY
+
+FUZZIFY Rentabilidad
+    TERM Baja := trian 0 10 30;
+    TERM Media := trian 25 45 55;
+    TERM Alta := trian 50 60 80;
+    TERM MuyAlta := trian 75 95 100;
+END_FUZZIFY
+
+FUZZIFY Plazo
+    TERM Corto := trape 0 0 1 3;
+    TERM Mediano := trape 2 3 4 5;
+    TERM Largo := trape 4 5 6 8;
+    TERM MuyLargo := trape 7 8 9 10;
+END_FUZZIFY
+
+DEFUZZIFY Diversificacion
+    TERM Bajo := trian 1 1 3;
+    TERM Moderado := trape 2 3 4 5;
+    TERM Alto := trape 4 5 7 8;
+    TERM MuyAlto := trian 7 10 10;
+
+    METHOD : COG;
+    DEFAULT := 1;
+END_DEFUZZIFY
+
+DEFUZZIFY Liquidez
+    TERM MuyBaja := trian 0 0 25;
+    TERM Baja := trape 20 35 45 55;
+    TERM Moderada := trape 50 55 70 75;
+    TERM Alta := trian 70 100 100;
+
+    METHOD : COG;
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+
+    RULE 1 : IF (Riesgo IS MuyBajo) AND (Rentabilidad IS Alta)
+            THEN Diversificacion IS Bajo, Liquidez IS Alta;
+
+    RULE 2 : IF (Riesgo IS Alto) AND (Plazo IS Largo)
+            THEN Diversificacion IS Alto, Liquidez IS Baja;
+            
+    RULE 3 : IF (Riesgo IS Medio) AND (Rentabilidad IS Media) AND (Plazo IS Mediano)
+            THEN Diversificacion IS Moderado, Liquidez IS Moderada;
+
+    RULE 4 : IF (Riesgo IS MuyAlto) OR (Rentabilidad IS MuyAlta)
+            THEN Diversificacion IS Moderado, Liquidez IS Moderada;
+
+    RULE 5 : IF (Plazo IS Corto) AND (Riesgo IS Bajo)
+            THEN Liquidez IS Alta;
+
+    RULE 6 : IF (Riesgo IS Bajo) AND (Plazo IS MuyLargo)
+            THEN Diversificacion IS Moderado, Liquidez IS Baja;
+
+    RULE 7 : IF (Riesgo IS Medio) AND (Plazo IS Corto)
+            THEN Diversificacion IS Bajo, Liquidez IS Alta;
+
+    RULE 8 : IF (Rentabilidad IS MuyAlta) AND (Plazo IS Largo)
+            THEN Diversificacion IS MuyAlto;
+
+    RULE 9 : IF (Plazo IS Corto) OR (Rentabilidad IS Baja)
+            THEN Liquidez IS Alta;
+
+    RULE 10 : IF (Riesgo IS Alto) AND (Rentabilidad IS Baja)
+            THEN Diversificacion IS Alto;
+
+    RULE 11 : IF (Riesgo IS MuyBajo) OR (Rentabilidad IS Media)
+            THEN Liquidez IS Alta;
+
+    RULE 12 : IF (Riesgo IS MuyAlto)
+            THEN Diversificacion IS MuyAlto;
+
+    RULE 13 : IF (Rentabilidad Is Baja)
+            THEN Diversificacion IS Bajo;
+
+    RULE 14 : IF (Riesgo IS Medio) AND (Plazo IS Largo)
+            THEN Diversificacion IS Alto, Liquidez IS Moderada;
+
+    RULE 15 : IF (Plazo IS Corto)
+            THEN Diversificacion IS Bajo, Liquidez IS Alta;
+
+    RULE 16 : IF (Rentabilidad IS Alta) AND (Plazo IS Mediano)
+            THEN Diversificacion IS Alto, Liquidez IS Moderada;
+
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

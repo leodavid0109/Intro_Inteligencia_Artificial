@@ -1,0 +1,41 @@
+[System]
+Name='Tipper'
+Type='mamdani'
+Version=2.0
+NumInputs=2
+NumOutputs=1
+NumRules=4
+AndMethod='min'
+OrMethod='max'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='centroid'
+
+[Input1]
+Name='servicio'
+Range=[0 10]
+NumMFs=3
+MF1='pobre':'gaussmf',[1.5 0]
+MF2='bueno':'gaussmf',[1.5 5]
+MF3='excelente':'gaussmf',[1.5 10]
+
+[Input2]
+Name='comida'
+Range=[0 10]
+NumMFs=2
+MF1='rancia':'trapmf',[0 0 3 7]
+MF2='deliciosa':'trapmf',[3 7 10 10]
+
+[Output1]
+Name='propina'
+Range=[0 20]
+NumMFs=3
+MF1='baja':'trapmf',[0 0 6 10]
+MF2='promedio':'trimf',[6 10 14]
+MF3='generosa':'trapmf',[10 14 20 20]
+
+[Rules]
+1 1, 1 (1) : 2
+2 0, 2 (1) : 2
+3 2, 3 (1) : 2
+1 2, 2 (1) : 1

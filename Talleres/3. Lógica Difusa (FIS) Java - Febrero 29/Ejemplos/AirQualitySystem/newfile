@@ -1,0 +1,243 @@
+package interfaz;
+
+import air_quality_system.AirQualitySystem;
+import javax.swing.*;
+import java.awt.*;
+
+public class AirQualityUI extends javax.swing.JFrame {
+    
+    AirQualitySystem sistema = new AirQualitySystem();
+    
+    public AirQualityUI() {
+        initComponents();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initComponents() {
+        jPanel1 = new javax.swing.JPanel();
+        BannerLabel = new javax.swing.JLabel();
+        IconLabel = new javax.swing.JLabel();
+        InstruccionesLabel = new javax.swing.JLabel();
+        CO2Label = new javax.swing.JLabel();
+        ParticulasLabel = new javax.swing.JLabel();
+        TemperaturaLabel = new javax.swing.JLabel();
+        CO2TextField = new javax.swing.JTextField();
+        ParticulasTextField = new javax.swing.JTextField();
+        TemperaturaComboBox = new javax.swing.JComboBox<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        ResultadoTextArea = new javax.swing.JTextArea();
+        CalcularButton = new javax.swing.JButton();
+        SalirButton = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Sistema de Calidad del Aire");
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Control de Parámetros"));
+        jPanel1.setPreferredSize(new java.awt.Dimension(450, 600));
+
+        BannerLabel.setFont(new java.awt.Font("Impact", 1, 36));
+        BannerLabel.setForeground(new java.awt.Color(51, 153, 255));
+        BannerLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        BannerLabel.setText("CALIDAD DEL AIRE");
+
+        // Puedes agregar un ícono si lo deseas
+        //IconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/aire.png")));
+
+        InstruccionesLabel.setFont(new java.awt.Font("Segoe UI", 0, 16));
+        InstruccionesLabel.setText("<html>Ingrese los valores de CO₂ (0-100), partículas PM2.5 (0-50) y temperatura (0-40)</html>");
+
+        CO2Label.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        CO2Label.setText("CO₂ (ppm):");
+
+        ParticulasLabel.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        ParticulasLabel.setText("PM2.5 (μg/m³):");
+
+        TemperaturaLabel.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        TemperaturaLabel.setText("Temperatura (°C):");
+
+        // Configurar ComboBox de temperatura
+        String[] temps = new String[41];
+        for(int i = 0; i <= 40; i++) {
+            temps[i] = String.valueOf(i);
+        }
+        TemperaturaComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(temps));
+
+        ResultadoTextArea.setEditable(false);
+        ResultadoTextArea.setColumns(20);
+        ResultadoTextArea.setRows(5);
+        jScrollPane1.setViewportView(ResultadoTextArea);
+
+        CalcularButton.setText("Evaluar");
+        CalcularButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CalcularButtonActionPerformed(evt);
+            }
+        });
+
+        SalirButton.setText("Salir");
+        SalirButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SalirButtonActionPerformed(evt);
+            }
+        });
+
+        // Validación de entrada numérica para CO2
+        CO2TextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                validarNumero(evt);
+            }
+        });
+
+        // Validación de entrada numérica para Partículas
+        ParticulasTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                validarNumero(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BannerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(InstruccionesLabel)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(CO2Label, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(CO2TextField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(ParticulasLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(ParticulasTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(TemperaturaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(TemperaturaComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(CalcularButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(SalirButton)))
+                .addContainerGap())
+        );
+
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(BannerLabel)
+                .addGap(18, 18, 18)
+                .addComponent(InstruccionesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(CO2Label, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CO2TextField, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ParticulasLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ParticulasTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(TemperaturaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TemperaturaComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(CalcularButton)
+                    .addComponent(SalirButton))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        pack();
+        setLocationRelativeTo(null);
+    }
+
+    private void CalcularButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            double co2 = Double.parseDouble(CO2TextField.getText().replace(",", "."));
+            double particulas = Double.parseDouble(ParticulasTextField.getText().replace(",", "."));
+            int temperatura = Integer.parseInt((String)TemperaturaComboBox.getSelectedItem());
+            
+            if (co2 < 0 || co2 > 100 || particulas < 0 || particulas > 50) {
+                JOptionPane.showMessageDialog(rootPane, "Por favor ingrese valores dentro de los rangos permitidos");
+                return;
+            }
+            
+            ResultadoTextArea.setText(sistema.evaluarCalidadAire(co2, particulas, temperatura));
+            
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(rootPane, "Por favor ingrese valores numéricos válidos");
+        }
+    }
+
+    private void SalirButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        System.exit(0);
+    }
+
+    private void validarNumero(java.awt.event.KeyEvent evt) {
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c) && c != '.' && c != ',' && c != KeyEvent.VK_BACK_SPACE) {
+            getToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(rootPane, "Ingrese solo números");
+        }
+    }
+
+    // Variables declaration
+    private javax.swing.JLabel BannerLabel;
+    private javax.swing.JButton CalcularButton;
+    private javax.swing.JLabel CO2Label;
+    private javax.swing.JTextField CO2TextField;
+    private javax.swing.JLabel ParticulasLabel;
+    private javax.swing.JTextField ParticulasTextField;
+    private javax.swing.JLabel TemperaturaLabel;
+    private javax.swing.JComboBox<String> TemperaturaComboBox;
+    private javax.swing.JLabel IconLabel;
+    private javax.swing.JLabel InstruccionesLabel;
+    private javax.swing.JTextArea ResultadoTextArea;
+    private javax.swing.JButton SalirButton;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    // End of variables declaration
+
+    public static void main(String args[]) {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(AirQualityUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+        java.awt.EventQueue.invokeLater(() -> {
+            new AirQualityUI().setVisible(true);
+        });
+    }
+}

@@ -1,0 +1,55 @@
+[System]
+Name='FIS Horno Repostero LDVD'
+Type='mamdani'
+Version=2.0
+NumInputs=3
+NumOutputs=1
+NumRules=10
+AndMethod='min'
+OrMethod='max'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='centroid'
+
+[Input1]
+Name='HumedadHorno'
+Range=[0 10]
+NumMFs=3
+MF1='Baja':'trimf',[0 0 4.5]
+MF2='Media':'pimf',[0.5 3.5 6.5 9.5]
+MF3='Alta':'trimf',[5.5 10 10]
+
+[Input2]
+Name='IntensidadMarron'
+Range=[0 10]
+NumMFs=2
+MF1='Baja':'trapmf',[0 0 3 8]
+MF2='Alta':'trapmf',[4 7 10 10]
+
+[Input3]
+Name='VolumenPostre'
+Range=[0 10]
+NumMFs=3
+MF1='Pequeño':'pimf',[0 0 1.5 4]
+MF2='Mediano':'pimf',[1 3.5 6.5 9]
+MF3='Grande':'pimf',[6 8.5 10 10]
+
+[Output1]
+Name='Temperatura'
+Range=[165 225]
+NumMFs=3
+MF1='Baja':'gaussmf',[10.7176322417298 165]
+MF2='Media':'gbellmf',[11.2 2.93041723266693 195]
+MF3='Alta':'smf',[195 210]
+
+[Rules]
+3 1 3, 1 (1) : 1
+2 1 2, 2 (1) : 1
+1 2 1, 1 (1) : 1
+2 2 1, 1 (1) : 1
+1 2 3, 2 (1) : 1
+1 1 2, 3 (1) : 1
+1 1 3, 3 (1) : 1
+3 1 0, 1 (1) : 2
+1 0 1, 3 (1) : 2
+0 1 1, 1 (1) : 2

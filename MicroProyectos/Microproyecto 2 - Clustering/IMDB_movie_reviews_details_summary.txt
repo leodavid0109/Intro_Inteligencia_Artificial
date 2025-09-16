@@ -1,0 +1,12 @@
+This CSV file contains the details about the top 1000 rated movies on IMDB.
+
+ID: id
+name: Name of the movie
+year: Year of release
+runtime: Movie runtime
+genre: Movie Genre
+metascore: Metascore on IMDB
+rating: IMDB Ratings
+timeline: Short storyline of the movie
+votes: Total votes earned on IMDB
+gross: Box-office grossings

@@ -1,0 +1,24 @@
+% Restricciones iniciales: dígitos 0 a 9
+dig(0). dig(1). dig(2). dig(3). dig(4).
+dig(5). dig(6). dig(7). dig(8). dig(9).
+
+% Restricciones iniciales 
+diferent_digits(S,E,N,D,M,O,R,Y) :-dig(S),dig(M),dig(O),dig(N),dig(R),dig(D),dig(E),dig(Y),
+    \+ S=M, \+ S=O, \+ S=N, \+ S=R, \+ S=D, \+ S=E, \+ S=Y,
+    \+ M=O, \+ M=N, \+ M=R, \+ M=D, \+ M=E, \+ M=Y,
+    \+ O=N, \+ O=R, \+ O=D, \+ O=E, \+ O=Y,
+    \+ N=R, \+ N=D, \+ N=E, \+ N=Y,
+    \+ R=D, \+ R=E, \+ R=Y,
+    \+ D=E, \+ D=Y,
+    \+ E=Y.
+
+% Ecuaciones para SEND+MORE=MONEY.
+solution(S,E,N,D,M,O,R,Y,C1,C2,C3) :-
+diferent_digits(S,E,N,D,M,O,R,Y),S>0,M>0,
+Y is (D+E) mod 10, C1 is (D+E) // 10,
+E is (N+R+C1) mod 10, C2 is (N+R+C1) // 10,
+N is (E+O+C2) mod 10, C3 is (E+O+C2) // 10,
+O is (S+M+C3) mod 10, M is (S+M+C3) // 10.
+
+% Para probar debe ejecutar con M=1 ... solution(S,E,N,D,1,O,R,Y,C1,C2,C3)
+

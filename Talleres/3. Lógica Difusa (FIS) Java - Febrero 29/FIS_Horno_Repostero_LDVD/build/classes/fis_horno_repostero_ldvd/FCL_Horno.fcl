@@ -1,0 +1,65 @@
+FUNCTION_BLOCK horno_repostero
+
+// Definición de las variables de entrada
+VAR_INPUT
+    HumedadHorno : REAL; RANGE := (0 .. 10);
+    IntensidadMarron : REAL; RANGE := (0 .. 10);
+    VolumenPostre : REAL; RANGE := (0 .. 10);
+END_VAR
+
+// Definición de las variables de salida
+VAR_OUTPUT
+    Temperatura : REAL; RANGE := (165 .. 225);
+END_VAR
+
+// Fuzzificación de las variables de entrada
+FUZZIFY HumedadHorno
+    TERM Baja := trian 0 0 4.5;
+    TERM Media := gbell 2.5 4 5;
+    //TERM Media := trape 0.5 3.5 6.5 9.5;
+    TERM Alta := trian 5.5 10 10;
+END_FUZZIFY
+
+FUZZIFY IntensidadMarron
+    TERM Baja := trape 0 0 3 8;
+    TERM Alta := trape 4 7 10 10;
+END_FUZZIFY
+
+FUZZIFY VolumenPostre
+    //TERM Pequeno := trape 0 0 1.5 4;
+    TERM Pequeno := gbell 2.5 4 0;
+    //TERM Mediano := trape 1 3.5 6.5 9;
+    TERM Mediano := gbell 2.5 4 5;
+    //TERM Grande := trape 6 8.5 10 10;
+    TERM Grande := gbell 2.5 4 10;
+END_FUZZIFY
+
+// Defuzzificación de la variable de salida
+DEFUZZIFY Temperatura
+    TERM Baja := gauss 165 10.72;
+    TERM Media := gbell 11.2 2.93 195;
+    TERM Alta := gbell 22.5 5.86 225;
+
+    METHOD : COG; // Método de 'Centro de Gravedad'
+    DEFAULT := 165;
+END_DEFUZZIFY
+
+// Reglas de inferencia
+RULEBLOCK No1
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+
+    RULE 1 : IF (HumedadHorno IS Alta) AND (IntensidadMarron IS Baja) AND (VolumenPostre IS Grande) THEN Temperatura IS Baja;
+    RULE 2 : IF (HumedadHorno IS Media) AND (IntensidadMarron IS Baja) AND (VolumenPostre IS Mediano) THEN Temperatura IS Media;
+    RULE 3 : IF (HumedadHorno IS Baja) AND (IntensidadMarron IS Alta) AND (VolumenPostre IS Pequeno) THEN Temperatura IS Baja;
+    RULE 4 : IF (HumedadHorno IS Media) AND (IntensidadMarron IS Alta) AND (VolumenPostre IS Pequeno) THEN Temperatura IS Baja;
+    RULE 5 : IF (HumedadHorno IS Baja) AND (IntensidadMarron IS Alta) AND (VolumenPostre IS Grande) THEN Temperatura IS Media;
+    RULE 6 : IF (HumedadHorno IS Baja) AND (IntensidadMarron IS Baja) AND (VolumenPostre IS Mediano) THEN Temperatura IS Alta;
+    RULE 7 : IF (HumedadHorno IS Baja) AND (IntensidadMarron IS Baja) AND (VolumenPostre IS Grande) THEN Temperatura IS Alta;
+    RULE 8 : IF (HumedadHorno IS Alta) OR (IntensidadMarron IS Baja) THEN Temperatura IS Baja;
+    RULE 9 : IF (HumedadHorno IS Baja) OR (VolumenPostre IS Pequeno) THEN Temperatura IS Alta;
+    RULE 10 : IF (IntensidadMarron IS Baja) OR (VolumenPostre IS Pequeno) THEN Temperatura IS Baja;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
