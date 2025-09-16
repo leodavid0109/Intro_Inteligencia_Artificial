@@ -1,6 +1,6 @@
 # Repositorio de Introducción a la Inteligencia Artificial
 
-Este repositorio fue desarrollado como parte del curso de **Introducción a la Inteligencia Artificial** en [nombre de la institución educativa].  
+Este repositorio fue desarrollado como parte del curso de **Introducción a la Inteligencia Artificial**.  
 Aquí se encuentran las actividades, implementaciones y ejemplos trabajados durante el curso, abarcando los fundamentos y aplicaciones básicas de la IA.
 
 ## Acerca del Curso
