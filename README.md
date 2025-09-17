@@ -31,4 +31,5 @@ Este curso ofrece una visión general de los conceptos clave, técnicas y algori
 
 ## Autores
 
-Este repositorio fue desarrollado por estudiantes de la materia de **Introducción a la Inteligencia Artificial** en [nombre de la institución educativa], como parte de las actividades académicas.
+Repositorio académico desarrollado en la asignatura de **Introducción a la Inteligencia Artificial** por:  
+- [Leonard David Vivas Dallos](https://github.com/leodavid0109)
